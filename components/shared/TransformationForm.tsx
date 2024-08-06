@@ -29,9 +29,12 @@ export const formSchema = z.object({
     publicId: z.string(),
 })
 
-const TransformationForm = ({ action, data = null, userId, type, creditBalance }: TransformationFormProps) => {
+const TransformationForm = ({ action, data = null, userId, type, creditBalance, config = null }: TransformationFormProps) => {
 
     const [image, setImage] = useState(data)
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isTransforming, setIsTransforming] = useState(false);
+    const [transformationConfig, setTransformationConfig] = useState(config)
     const [newTransformation, setNewTransformation] = useState<Transformations | null>(null)
 
     const transformationType = transformationTypes[type]
@@ -64,6 +67,10 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance }
     const onInputChangeHandler = (fielName: string, value: string, type: string, onChangeField: (value: string) => void) => {
 
     }
+
+    //5. onTransform handler
+
+    const onTransformHandler = () => { }
 
     return (
         <Form {...form}>
@@ -111,22 +118,47 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance }
                             }
                             className="w-full"
                             render={(({ field }) => (
-                                <Input 
-                                value={field.value}
-                                className="input-field"
-                                onChange={(e) => onInputChangeHandler(
-                                    'prompt',
-                                    e.target.value,
-                                    type,
-                                    field.onChange
-                                )}
+                                <Input
+                                    value={field.value}
+                                    className="input-field"
+                                    onChange={(e) => onInputChangeHandler(
+                                        'prompt',
+                                        e.target.value,
+                                        type,
+                                        field.onChange
+                                    )}
                                 />
                             ))}
                         />
 
-                        
+                        {type === 'recolor' && (
+                            <CustomField
+                                control={form.control}
+                                name="color"
+                                formLabel="Replacement Color"
+                                className="w-full"
+                                render={({ field }) => (
+                                    <Input
+                                        value={field.value}
+                                        className="input-field"
+                                        onChange={(e) => onInputChangeHandler(
+                                            'color',
+                                            e.target.value,
+                                            'recolor',
+                                            field.onChange
+                                        )}
+                                    />
+                                )}
+                            />
+                        )}
+
                     </div>
                 )}
+                <div className="flex flex-col gap-4">
+                    <Button type="button" className="submit-button capitalize" disabled={isTransforming || newTransformation === null} onClick={onTransformHandler} >{isTransforming ? 'Transforming...' : "Apply Transformation"}</Button>
+                    <Button type="submit" className="submit-button capitalize" disabled={isSubmitting} >{isSubmitting ? "Submitting...." : "Save Image"}</Button>
+
+                </div>
             </form>
         </Form>
     )
