@@ -21,6 +21,7 @@ import { useState, useTransition } from "react"
 import { AspectRatioKey, debounce, deepMergeObjects } from "@/lib/utils"
 import { updateCredits } from "@/lib/actions/user.actions"
 import MediaUploader from "./MediaUploader"
+import TransformedImage from "./TransformedImage"
 
 
 export const formSchema = z.object({
@@ -76,7 +77,7 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
     }
     //4. Define input change handler
 
-    // TODO: Return to updateCredits
+    // TODO: update creditfee to something else
     const onInputChangeHandler = (fielName: string, value: string, type: string, onChangeField: (value: string) => void) => {
         debounce(() => {
             setNewTransformation((prevState: any) => ({
@@ -101,7 +102,7 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
         setNewTransformation(null)
 
         startTransition(async () => {
-            // await updateCredits(userId, creditFee)
+            await updateCredits(userId, -1)
         })
     }
 
@@ -194,15 +195,24 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
                         name="publicId"
                         className="flex size-full flex-col"
                         render={({ field }) => (
-                            <MediaUploader 
-                            onValueChange={field.onChange}
-                            setImage={setImage}
-                            publicId={field.value}
-                            image={image}
-                            type={type}
+                            <MediaUploader
+                                onValueChange={field.onChange}
+                                setImage={setImage}
+                                publicId={field.value}
+                                image={image}
+                                type={type}
 
                             />
                         )}
+                    />
+
+                    <TransformedImage
+                        image={image}
+                        type={type}
+                        title={form.getValues().title}
+                        isTransforming={isTransforming}
+                        setIsTransforming = {setIsTransforming}
+                        transformationConfig={transformationConfig}
                     />
                 </div>
 
