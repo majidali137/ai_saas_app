@@ -148,18 +148,19 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
     //4. Define input change handler
 
     // TODO: update creditfee to something else
-    const onInputChangeHandler = (fielName: string, value: string, type: string, onChangeField: (value: string) => void) => {
+    const onInputChangeHandler = (fieldName: string, value: string, type: string, onChangeField: (value: string) => void) => {
         debounce(() => {
-            setNewTransformation((prevState: any) => ({
-                ...prevState,
-                [type]: {
-                    ...prevState?.[type],
-                    [fielName === 'prompt' ? 'prompt' : 'to']: value
-                }
-            }))
-            return onChangeField(value)
-        }, 1000);
-    }
+          setNewTransformation((prevState: any) => ({
+            ...prevState,
+            [type]: {
+              ...prevState?.[type],
+              [fieldName === 'prompt' ? 'prompt' : 'to' ]: value 
+            }
+          }))
+        }, 1000)();
+          
+        return onChangeField(value)
+      }
 
     //5. onTransform handler
 

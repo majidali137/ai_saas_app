@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
     Sheet,
@@ -15,7 +15,13 @@ import { Button } from '../ui/button'
 
 
 const MobileNav = () => {
+    const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname()
+
+    const handleClose = () => {
+        setIsOpen(false);
+    };
+
     return (
         <header className='header'>
             <Link href="/" className='flex items-center gap-2 md:py-2'>
@@ -26,7 +32,7 @@ const MobileNav = () => {
                 {/* for signedIn user */}
                 <SignedIn >
                     <UserButton />
-                    <Sheet>
+                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger>
                             <Image src="/assets/icons/menu.svg" alt="manu" width={32} height={32} className='cursor-pointer' />
                         </SheetTrigger>
@@ -42,8 +48,8 @@ const MobileNav = () => {
                                                 key={link.route}
                                                 className={`${isActive && 'gradient-text'} p-18 flex whitespace-nowrap text-dark-700`}
                                             >
-                                                <Link href={link.route} className='sidebar-link cursor-pointer' >
-                                                    <Image src={link.icon} alt='logo' width={24} height={24}  />
+                                                <Link href={link.route} className='sidebar-link cursor-pointer' onClick={handleClose} >
+                                                    <Image src={link.icon} alt='logo' width={24} height={24} />
                                                     {link.label}
                                                 </Link>
                                             </li>
@@ -58,13 +64,13 @@ const MobileNav = () => {
                 </SignedIn>
 
                 {/* for logIN User */}
-                 {/* For sign out */}
+                {/* For sign out */}
 
-                 <SignedOut>
-                        <Button asChild className='button bg-purple-gradient bg-cover'>
-                            <Link href="/sign-in">LogIn</Link>
-                        </Button>
-                    </SignedOut>
+                <SignedOut>
+                    <Button asChild className='button bg-purple-gradient bg-cover'>
+                        <Link href="/sign-in">LogIn</Link>
+                    </Button>
+                </SignedOut>
             </nav>
         </header>
     )
